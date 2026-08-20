@@ -1,15 +1,14 @@
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getCases } from "../services/caseService";
-import { 
-  Activity, 
-  Heart, 
-  AlertTriangle, 
-  Plus, 
-  User, 
+import {
+  Activity,
+  Heart,
+  AlertTriangle,
+  Plus,
+  User,
   ArrowRight,
-  RefreshCw,
-  HeartPulse
+  RefreshCw
 } from "lucide-react";
 
 export default function Dashboard() {
@@ -52,9 +51,9 @@ export default function Dashboard() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 pb-6 border-b border-slate-200">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <HeartPulse className="h-8 w-8 text-teal-600" />
+            <img src="/cardio-logo.jpeg" alt="CardioSense" className=" w-8 rounded-md" />
             <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
-              Cardio<span className="text-teal-600">Compass</span>
+              Cardio<span className="text-teal-600">Sense</span>
             </h1>
           </div>
           <p className="text-slate-500 text-sm md:text-base">

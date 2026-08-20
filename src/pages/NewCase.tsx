@@ -134,7 +134,7 @@ export default function NewCase() {
           Patient Intake Assessment
         </h1>
         <p className="text-slate-500 mt-2">
-          Register a patient case and record clinical variables. CardioCompass will classify findings using evidence-based guidelines.
+          Register a patient case and record clinical variables. CardioSense will classify findings using evidence-based guidelines.
         </p>
       </div>
 

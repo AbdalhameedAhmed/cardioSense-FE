@@ -180,7 +180,7 @@ export default function CaseDetails() {
               <div className="flex flex-col h-[520px] rounded-2xl border border-slate-200 overflow-hidden">
                 <div className="px-4 py-3 bg-slate-50/70 border-b border-slate-100 flex items-center gap-2">
                   <Sparkles className="h-4 w-4 text-teal-600" />
-                  <span className="font-bold text-slate-800 text-sm">CardioCompass Assistant</span>
+                  <span className="font-bold text-slate-800 text-sm">CardioSense Assistant</span>
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/30">
