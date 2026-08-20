@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createCase } from "../services/caseService";
 import type { CaseCreateRequest } from "../services/caseService";
+import InfoTooltip from "../components/InfoTooltip";
 import { 
   HeartPulse, 
   ArrowLeft, 
@@ -160,7 +161,10 @@ export default function NewCase() {
             
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Age</label>
+                <label className="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                  Age
+                  <InfoTooltip text="Patient's age in years. Used to calculate cardiovascular risk score." />
+                </label>
                 <input 
                   type="number"
                   required
@@ -174,7 +178,10 @@ export default function NewCase() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Sex</label>
+                <label className="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                  Sex
+                  <InfoTooltip text="Biological sex, used because cardiovascular risk thresholds differ by sex." />
+                </label>
                 <select 
                   required
                   value={sex}
@@ -199,7 +206,10 @@ export default function NewCase() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Systolic (mmHg)</label>
+                <label className="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                  Systolic (mmHg)
+                  <InfoTooltip text="The pressure in arteries when the heart beats (top number of a BP reading)." />
+                </label>
                 <input 
                   type="number"
                   min="50"
@@ -212,7 +222,10 @@ export default function NewCase() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Diastolic (mmHg)</label>
+                <label className="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                  Diastolic (mmHg)
+                  <InfoTooltip text="The pressure in arteries when the heart rests between beats (bottom number of a BP reading)." />
+                </label>
                 <input 
                   type="number"
                   min="30"
@@ -239,7 +252,10 @@ export default function NewCase() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Checkboxes */}
               <div className="space-y-4">
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Comorbidities & Habits</label>
+                <label className="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                  Comorbidities & Habits
+                  <InfoTooltip text="Existing conditions and lifestyle factors that increase cardiovascular risk." />
+                </label>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <label className="flex items-center gap-3 p-3.5 rounded-xl border border-slate-100 hover:border-teal-100 hover:bg-teal-50/20 cursor-pointer transition duration-150">
@@ -286,11 +302,17 @@ export default function NewCase() {
 
               {/* Lipid inputs */}
               <div className="space-y-4">
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Lipid Panel (mg/dL)</label>
+                <label className="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                  Lipid Panel (mg/dL)
+                  <InfoTooltip text="Blood cholesterol levels from the most recent lipid panel, used in risk scoring." />
+                </label>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs text-slate-500 mb-1">Total Cholesterol</label>
+                    <label className="flex items-center gap-1.5 text-xs text-slate-500 mb-1">
+                      Total Cholesterol
+                      <InfoTooltip text="Total blood cholesterol level, including LDL, HDL, and other lipid components." />
+                    </label>
                     <input 
                       type="number"
                       min="50"
@@ -303,7 +325,10 @@ export default function NewCase() {
                   </div>
 
                   <div>
-                    <label className="block text-xs text-slate-500 mb-1">HDL Cholesterol</label>
+                    <label className="flex items-center gap-1.5 text-xs text-slate-500 mb-1">
+                      HDL Cholesterol
+                      <InfoTooltip text="High-density lipoprotein, often called 'good' cholesterol — higher levels are protective." />
+                    </label>
                     <input 
                       type="number"
                       min="10"
@@ -329,7 +354,10 @@ export default function NewCase() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Symptoms tag entry */}
               <div className="space-y-4">
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Reported Symptoms</label>
+                <label className="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                  Reported Symptoms
+                  <InfoTooltip text="Symptoms the patient is currently experiencing. Type a symptom and press the + button to add it." />
+                </label>
                 <div className="flex gap-2">
                   <input 
                     type="text"
@@ -365,7 +393,10 @@ export default function NewCase() {
 
               {/* Medications tag entry */}
               <div className="space-y-4">
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Current Medications</label>
+                <label className="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                  Current Medications
+                  <InfoTooltip text="Medications the patient is currently taking. Type a medication and press the + button to add it." />
+                </label>
                 <div className="flex gap-2">
                   <input 
                     type="text"
