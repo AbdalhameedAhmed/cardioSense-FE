@@ -1,7 +1,7 @@
 export interface Patient {
   id: string;
   age?: number;
-  sex?: 'male' | 'female' | 'other';
+  sex?: 'male' | 'female';
   created_at: string;
   updated_at: string;
 }
@@ -29,7 +29,7 @@ export interface PatientCase {
 export interface CaseCreateRequest {
   patient_id?: string;
   age?: number;
-  sex?: 'male' | 'female' | 'other';
+  sex?: 'male' | 'female';
   status?: string;
   systolic_bp?: number;
   diastolic_bp?: number;

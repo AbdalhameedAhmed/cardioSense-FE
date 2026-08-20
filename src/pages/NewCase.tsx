@@ -22,7 +22,7 @@ export default function NewCase() {
 
   // Form State
   const [age, setAge] = useState<number | "">("");
-  const [sex, setSex] = useState<"male" | "female" | "other" | "">("");
+  const [sex, setSex] = useState<"male" | "female" | "">("");
   const [systolic, setSystolic] = useState<number | "">("");
   const [diastolic, setDiastolic] = useState<number | "">("");
   const [smoking, setSmoking] = useState(false);
@@ -191,7 +191,6 @@ export default function NewCase() {
                   <option value="">Select...</option>
                   <option value="male">Male</option>
                   <option value="female">Female</option>
-                  <option value="other">Other</option>
                 </select>
               </div>
             </div>
