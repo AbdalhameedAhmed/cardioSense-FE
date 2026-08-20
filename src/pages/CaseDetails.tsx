@@ -10,6 +10,24 @@ function sessionStorageKey(caseId: string) {
   return `cardiocompass:agent-session:${caseId}`;
 }
 
+function riskCategoryColor(risk: string): string {
+  const normalized = risk.toLowerCase();
+  if (normalized.includes("insufficient") || normalized === "unknown") return "text-slate-600 bg-slate-100 border-slate-200";
+  if (normalized.includes("very high") || normalized === "high") return "text-red-700 bg-red-50 border-red-200";
+  if (normalized.includes("moderate")) return "text-amber-700 bg-amber-50 border-amber-200";
+  return "text-emerald-700 bg-emerald-50 border-emerald-200";
+}
+
+// Color thresholds mirror the retrieval-confidence calibration in
+// BE/app/services/graph.py (CONFIDENCE_DISTANCE_FLOOR/CEIL): scores are
+// derived from real cosine-distance measurements, not arbitrary buckets, but
+// the color bucketing itself here is a simple, readable convention.
+function confidenceColor(confidence: number): string {
+  if (confidence >= 80) return "text-emerald-700 bg-emerald-50 border-emerald-200";
+  if (confidence >= 50) return "text-amber-700 bg-amber-50 border-amber-200";
+  return "text-red-700 bg-red-50 border-red-200";
+}
+
 // Lightweight renderer for the small markdown subset the assistant emits
 // (### headers, **bold**, - bullet lists) without pulling in a markdown dependency.
 function AssistantMessageContent({ content }: { content: string }) {
@@ -201,9 +219,25 @@ export default function CaseDetails() {
               </div>
             ) : (
               <div className="flex flex-col h-[520px] rounded-2xl border border-slate-200 overflow-hidden">
-                <div className="px-4 py-3 bg-slate-50/70 border-b border-slate-100 flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-teal-600" />
-                  <span className="font-bold text-slate-800 text-sm">CardioSense Assistant</span>
+                <div className="px-4 py-3 bg-slate-50/70 border-b border-slate-100 flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-teal-600" />
+                    <span className="font-bold text-slate-800 text-sm">CardioSense Assistant</span>
+                  </div>
+                  {session?.state?.evaluation_complete && (
+                    <div className="flex items-center gap-1.5">
+                      {session.state.risk_category && (
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${riskCategoryColor(session.state.risk_category)}`}>
+                          {session.state.risk_category}
+                        </span>
+                      )}
+                      {typeof session.state.retrieval_confidence === "number" && (
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${confidenceColor(session.state.retrieval_confidence)}`}>
+                          {session.state.retrieval_confidence}% confidence
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/30">

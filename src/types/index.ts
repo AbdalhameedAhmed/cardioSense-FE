@@ -51,10 +51,29 @@ export interface AgentMessage {
   created_at: string;
 }
 
+export interface Citation {
+  guideline_title?: string;
+  page_start?: number;
+  page_end?: number;
+  distance?: number;
+  confidence?: number;
+}
+
+export interface SessionState {
+  risk_category?: string;
+  retrieval_confidence?: number;
+  evidence_sufficient?: boolean;
+  evaluation_complete?: boolean;
+  citations: Citation[];
+  recommendations: string[];
+  missing_fields: string[];
+}
+
 export interface AgentSession {
   id: string;
   case_id: string;
   created_at: string;
   updated_at: string;
   messages: AgentMessage[];
+  state: SessionState;
 }
