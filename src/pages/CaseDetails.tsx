@@ -3,7 +3,7 @@ import type { FormEvent } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getCase } from "../services/caseService";
-import { createSession, getSession, sendMessage } from "../services/agentService";
+import { createSession, getSession, getSessionByCase, sendMessage } from "../services/agentService";
 import { ArrowLeft, RefreshCw, AlertTriangle, HeartPulse, Send, Sparkles } from "lucide-react";
 
 function sessionStorageKey(caseId: string) {
@@ -60,10 +60,33 @@ export default function CaseDetails() {
   const [messageInput, setMessageInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  // localStorage only knows about a session if it was started in THIS
+  // browser. A fresh browser/device (or cleared storage) has no local record
+  // even though a session may already exist on the backend, so fall back to
+  // asking the backend directly whenever localStorage came up empty.
+  const { data: existingSession } = useQuery({
+    queryKey: ["agent-session-by-case", caseId],
+    queryFn: () => getSessionByCase(caseId as string),
+    enabled: !!caseId && !sessionId,
+  });
+
+  // Persist the backend-discovered session id for next time, without
+  // funneling it through setState (React Query's cache is already the source
+  // of truth for `existingSession`; `resolvedSessionId` below derives from it
+  // directly during render instead of needing an extra state + re-render).
+  useEffect(() => {
+    if (existingSession && caseId) {
+      localStorage.setItem(sessionStorageKey(caseId), existingSession.id);
+    }
+  }, [existingSession, caseId]);
+
+  const resolvedSessionId = sessionId || existingSession?.id || null;
+
   const { data: session, isLoading: sessionLoading } = useQuery({
-    queryKey: ["agent-session", sessionId],
-    queryFn: () => getSession(sessionId as string),
-    enabled: !!sessionId,
+    queryKey: ["agent-session", resolvedSessionId],
+    queryFn: () => getSession(resolvedSessionId as string),
+    enabled: !!resolvedSessionId,
+    initialData: existingSession && resolvedSessionId === existingSession.id ? existingSession : undefined,
   });
 
   const startMutation = useMutation({
@@ -76,9 +99,9 @@ export default function CaseDetails() {
   });
 
   const sendMutation = useMutation({
-    mutationFn: (content: string) => sendMessage(sessionId as string, content),
+    mutationFn: (content: string) => sendMessage(resolvedSessionId as string, content),
     onSuccess: (data) => {
-      queryClient.setQueryData(["agent-session", sessionId], data);
+      queryClient.setQueryData(["agent-session", resolvedSessionId], data);
     },
   });
 
@@ -157,7 +180,7 @@ export default function CaseDetails() {
           </div>
 
           <div className="pt-6 border-t border-slate-100">
-            {!sessionId ? (
+            {!resolvedSessionId ? (
               <div className="text-center bg-teal-50/30 p-6 rounded-2xl border border-teal-100/50">
                 <HeartPulse className="h-10 w-10 text-teal-600 mx-auto mb-3" />
                 <h4 className="font-bold text-slate-800 mb-1">AI Clinical Evaluation</h4>

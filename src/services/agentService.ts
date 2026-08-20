@@ -29,6 +29,17 @@ export async function getSession(sessionId: string): Promise<AgentSession> {
   return response.json();
 }
 
+// Looks up the most recent session for a case directly from the backend,
+// rather than trusting only localStorage — a fresh browser/device (or
+// cleared storage) has no local record of a session that already exists.
+// Returns null (not an error) when no session exists yet for this case.
+export async function getSessionByCase(caseId: string): Promise<AgentSession | null> {
+  const response = await fetch(`${API_BASE_URL}/api/agent/sessions/by-case/${caseId}`);
+  if (response.status === 404) return null;
+  if (!response.ok) return parseError(response, "Failed to look up assistant session for case");
+  return response.json();
+}
+
 export async function sendMessage(sessionId: string, content: string): Promise<AgentSession> {
   const response = await fetch(`${API_BASE_URL}/api/agent/sessions/${sessionId}/message`, {
     method: "POST",
