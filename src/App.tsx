@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Dashboard from "./pages/Dashboard";
 import NewCase from "./pages/NewCase";
@@ -22,12 +22,12 @@ function App() {
           {/* Main Top Navigation Header */}
           <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
             <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-              <div className="flex items-center gap-2">
+              <Link to="/" className="flex items-center gap-2">
                 <img src="/cardio-logo.jpeg" alt="CardioSense" className=" w-4" />
                 <h1 className="text-lg font-extrabold text-slate-900 tracking-tight">
               Cardio<span className="text-teal-600">Sense</span>
             </h1>
-              </div>
+              </Link>
               <div className="flex items-center gap-4 text-xs font-semibold text-slate-500">
                 <span className="inline-flex items-center gap-1">
                   <span className="h-2 w-2 bg-emerald-500 rounded-full"></span>
