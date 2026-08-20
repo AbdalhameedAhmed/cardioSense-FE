@@ -99,7 +99,7 @@ export default function NewCase() {
 
     const payload: CaseCreateRequest = {
       age: Number(age),
-      sex: sex as "male" | "female" | "other",
+      sex: sex as "male" | "female",
       status: "active",
       systolic_bp: systolic !== "" ? Number(systolic) : undefined,
       diastolic_bp: diastolic !== "" ? Number(diastolic) : undefined,
