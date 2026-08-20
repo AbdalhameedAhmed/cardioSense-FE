@@ -1,77 +1,52 @@
-# React + TypeScript + Vite
+# CardioSense — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The React frontend for CardioSense: a clinical-decision-support dashboard for intake, tracking, and RAG-backed cardiovascular/hypertension risk assessment of patient cases.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React 19 + TypeScript + Vite
+- Tailwind CSS v4 (via `@tailwindcss/vite`)
+- TanStack React Query for server state
+- React Router for navigation
+- lucide-react for icons
 
-## React Compiler
+## Setup
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
-
-Note: This will impact Vite dev & build performances.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm install
+cp .env.example .env   # set VITE_API_URL to the backend's URL
+npm run dev            # http://localhost:5173
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Environment variables (`.env`)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Variable | Purpose |
+|---|---|
+| `VITE_API_URL` | Base URL of the backend API (default `http://localhost:8000`) |
+| `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` | Reserved for potential direct-Supabase features; not currently used by any page |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Pages
 
+| Route | Component | Purpose |
+|---|---|---|
+| `/` | `Dashboard.tsx` | Lists all patient cases with BP classification, risk-factor badges, and summary stats. Auto-refreshes every 15s |
+| `/new-case` | `NewCase.tsx` | Patient intake form — demographics, vitals, risk factors, symptoms/medications |
+| `/cases/:caseId` | `CaseDetails.tsx` | Case detail + the AI assistant chat: starts/resumes a session, renders the risk assessment (with citations and a confidence badge), and supports follow-up messages |
+
+## Services (`src/services/`)
+
+- `caseService.ts` — CRUD against `/api/cases`
+- `agentService.ts` — `createSession`, `getSession`, `getSessionByCase`, `sendMessage` against `/api/agent/sessions`
+
+## Notable design decisions
+
+- **Session resumption checks the backend, not just localStorage.** `CaseDetails.tsx` remembers a case's session ID in `localStorage` for fast reload, but a fresh browser/device (or cleared storage) falls back to `GET /api/agent/sessions/by-case/{case_id}` — otherwise a case with an existing chat would silently show "Start AI Evaluation" again on a first visit from a new browser.
+- **The assistant's markdown is rendered by a small dependency-free formatter** (`AssistantMessageContent` in `CaseDetails.tsx`) — it only needs to handle the specific subset (`###` headers, `**bold**`, `- ` bullets) that the backend actually emits, so a full markdown library wasn't worth the bundle size.
+- **Risk/confidence badges are color-coded from the backend's own values**, not re-derived in the frontend: `session.state.risk_category` and `session.state.retrieval_confidence` come directly from the API (see `SessionState` in `src/types/index.ts`); the frontend only maps them to a color bucket for display.
+
+## Build
+
+```bash
+npm run build    # tsc -b && vite build, output in dist/
+npm run preview  # serve the production build locally
 ```
